@@ -1,0 +1,50 @@
+const ToDoModel = require('../models/ToDoModels.js');
+
+// GET
+module.exports.getToDos = async (req, res) => {
+    try {
+        const toDos = await ToDoModel.find();
+        res.send(toDos);
+    } catch (err) {
+        console.error('Error fetching todos:', err);
+        res.status(500).send({ error: err, msg: "Something went wrong" });
+    }
+};
+
+// POST
+module.exports.saveTodo = async (req, res) => {
+    const { toDo } = req.body;
+    try {
+        const newToDo = await ToDoModel.create({ toDo });
+        console.log('ToDo Created Successfully');
+        res.status(201).json(newToDo);
+    } catch (err) {
+        console.error('Error saving todo:', err);
+        res.status(500).send({ error: err, msg: "Something went wrong" });
+    }
+};
+
+// PUT
+module.exports.updateTodo = async (req, res) => {
+    const { id } = req.params;
+    const { toDo } = req.body;
+    try {
+        await ToDoModel.findByIdAndUpdate(id, { toDo });
+        res.send('Updated Successfully');
+    } catch (err) {
+        console.error('Error updating todo:', err);
+        res.status(500).send({ error: err, msg: "Something went wrong" });
+    }
+};
+
+// DELETE
+module.exports.deleteTodo = async (req, res) => {
+    const { id } = req.params;
+    try {
+        await ToDoModel.findByIdAndDelete(id);
+        res.send('Deleted Successfully');
+    } catch (err) {
+        console.error('Error deleting todo:', err);
+        res.status(500).send({ error: err, msg: "Something went wrong" });
+    }
+};
